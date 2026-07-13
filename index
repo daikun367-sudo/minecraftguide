@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>マイクラで門司港を作ろう！ 制作ガイド</title>
+<style>
+  :root {
+    --brick: #b5482a;
+    --brick-dark: #8a3520;
+    --sea: #1e6f9f;
+    --sea-dark: #14506f;
+    --cream: #fdf6ec;
+    --ink: #333;
+    --green: #3a8f4d;
+    --yellow: #f5a623;
+    --code-bg: #2b2b3a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Hiragino Maru Gothic ProN", "BIZ UDGothic", "Yu Gothic", "Meiryo", sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.9;
+    font-size: 17px;
+  }
+  header {
+    background: linear-gradient(135deg, var(--brick) 0%, var(--brick-dark) 60%, var(--sea-dark) 100%);
+    color: #fff;
+    text-align: center;
+    padding: 48px 20px 36px;
+  }
+  header h1 { font-size: 2rem; margin: 0 0 8px; }
+  header p { margin: 4px 0; opacity: 0.95; }
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 999px;
+    padding: 2px 14px;
+    font-size: 0.85rem;
+    margin-top: 10px;
+  }
+  nav {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    padding: 8px 12px;
+    z-index: 10;
+    text-align: center;
+  }
+  nav a {
+    display: inline-block;
+    margin: 4px 6px;
+    padding: 4px 12px;
+    background: var(--cream);
+    border: 1.5px solid var(--brick);
+    border-radius: 999px;
+    color: var(--brick-dark);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: bold;
+  }
+  nav a:hover { background: var(--brick); color: #fff; }
+  main { max-width: 860px; margin: 0 auto; padding: 24px 16px 80px; }
+  section.chapter {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    padding: 28px 28px 20px;
+    margin: 32px 0;
+    border-top: 8px solid var(--brick);
+    scroll-margin-top: 90px;
+  }
+  section.chapter:nth-of-type(even) { border-top-color: var(--sea); }
+  .ch-num {
+    display: inline-block;
+    background: var(--brick);
+    color: #fff;
+    border-radius: 8px;
+    padding: 2px 14px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+  section.chapter:nth-of-type(even) .ch-num { background: var(--sea); }
+  h2 { margin: 4px 0 16px; font-size: 1.5rem; color: var(--brick-dark); }
+  section.chapter:nth-of-type(even) h2 { color: var(--sea-dark); }
+  h3 {
+    font-size: 1.15rem;
+    margin: 28px 0 10px;
+    padding-left: 10px;
+    border-left: 6px solid var(--yellow);
+  }
+  .cmd {
+    background: var(--code-bg);
+    color: #aef2a0;
+    font-family: "Consolas", "Menlo", monospace;
+    font-size: 1.05rem;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin: 10px 0;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .cmd .c { color: #8fa3c7; }
+  .box {
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin: 14px 0;
+  }
+  .box b.title { display: block; margin-bottom: 4px; }
+  .try  { background: #e8f6ea; border: 2px solid var(--green); }
+  .try  b.title { color: var(--green); }
+  .tip  { background: #e8f1f8; border: 2px solid var(--sea); }
+  .tip  b.title { color: var(--sea-dark); }
+  .warn { background: #fdeeee; border: 2px solid #d64545; }
+  .warn b.title { color: #b52f2f; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12px 0;
+    font-size: 0.95rem;
+  }
+  th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+  th { background: var(--cream); }
+  td.key {
+    font-weight: bold;
+    white-space: nowrap;
+  }
+  kbd {
+    background: #eee;
+    border: 1px solid #bbb;
+    border-bottom-width: 3px;
+    border-radius: 6px;
+    padding: 1px 8px;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+  .steps { counter-reset: step; list-style: none; padding-left: 0; }
+  .steps li {
+    counter-increment: step;
+    margin: 10px 0;
+    padding-left: 44px;
+    position: relative;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0; top: 2px;
+    width: 30px; height: 30px;
+    background: var(--yellow);
+    color: #fff;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  footer {
+    text-align: center;
+    padding: 24px;
+    color: #888;
+    font-size: 0.85rem;
+  }
+  @media print {
+    nav { display: none; }
+    section.chapter { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🧱 マイクラで門司港を作ろう！</h1>
+  <p>バーチャル門司港 制作ガイド</p>
+  <p>本物の門司港の街を、みんなでマインクラフトの中に作るプロジェクトです</p>
+  <span class="badge">統合版（Bedrock）対応・パソコン操作向け</span>
+</header>
+
+<nav>
+  <a href="#ch1">第1章 はじめに</a>
+  <a href="#ch2">第2章 基本操作</a>
+  <a href="#ch3">第3章 座標</a>
+  <a href="#ch4">第4章 コマンドの基本</a>
+  <a href="#ch5">第5章 fillコマンド</a>
+  <a href="#ch6">第6章 便利コマンド集</a>
+  <a href="#ch7">第7章 距離の測り方</a>
+  <a href="#ch8">第8章 建築のコツ</a>
+  <a href="#ch9">第9章 ルール</a>
+</nav>
+
+<main>
+
+<!-- ================= 第1章 ================= -->
+<section class="chapter" id="ch1">
+  <span class="ch-num">第1章</span>
+  <h2>はじめに 〜このプロジェクトについて〜</h2>
+  <p>このプロジェクトは、<b>門司港（もじこう）の本物の街並みを、マインクラフトの世界に再現する</b>プロジェクトです。門司港駅、レトロな建物、海や船……みんなの力で、マイクラの中に「もうひとつの門司港」を作りましょう！</p>
+
+  <h3>このガイドの読み方</h3>
+  <p>マイクラをパソコンで遊ぶのが初めての人は、<b>第2章から順番に</b>読んでください。もう操作に慣れている人は、第5章のfillコマンドや第7章の距離の測り方から読んでもOKです。</p>
+
+  <div class="tip">
+    <b class="title">💡 わからないことがあったら</b>
+    むずかしく感じても大丈夫。わからないことがあったら、いつでもリーダーやまわりの人に聞いてください。「聞くこと」は恥ずかしいことじゃなくて、上手になる一番の近道です！
+  </div>
+</section>
+
+<!-- ================= 第2章 ================= -->
+<section class="chapter" id="ch2">
+  <span class="ch-num">第2章</span>
+  <h2>マイクラの基本操作（パソコン版）</h2>
+  <p>まずは、キャラクターの動かし方から覚えましょう。パソコンのマイクラは、<b>左手でキーボード、右手でマウス</b>を使います。</p>
+
+  <h3>移動のしかた（キーボード）</h3>
+  <table>
+    <tr><th>キー</th><th>動き</th></tr>
+    <tr><td class="key"><kbd>W</kbd></td><td>前に進む（<kbd>W</kbd>をすばやく2回おすとダッシュ）</td></tr>
+    <tr><td class="key"><kbd>S</kbd></td><td>後ろに下がる</td></tr>
+    <tr><td class="key"><kbd>A</kbd></td><td>左に動く</td></tr>
+    <tr><td class="key"><kbd>D</kbd></td><td>右に動く</td></tr>
+    <tr><td class="key"><kbd>スペース</kbd></td><td>ジャンプ</td></tr>
+    <tr><td class="key"><kbd>Shift</kbd></td><td>しゃがむ（スニーク）。おしている間は<b>ブロックの端から落ちない</b>ので、高いところの作業で使おう</td></tr>
+  </table>
+  <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>の4つのキーに左手の指をのせておくのが基本の形です。</p>
+
+  <h3>視点（カメラ）の動かし方（マウス）</h3>
+  <p><b>マウスを動かすと、見る方向が変わります。</b>最初はグルグルして酔いそうになるかもしれませんが、すぐに慣れます。ゆっくり動かす練習をしましょう。</p>
+  <table>
+    <tr><th>マウス操作</th><th>動き</th></tr>
+    <tr><td class="key">マウスを動かす</td><td>見る方向を変える</td></tr>
+    <tr><td class="key">左クリック</td><td>ブロックを<b>壊す</b>（おしっぱなしで連続で壊せる）</td></tr>
+    <tr><td class="key">右クリック</td><td>ブロックを<b>置く</b></td></tr>
+    <tr><td class="key">ホイールを回す</td><td>手に持つアイテムを切りかえる</td></tr>
+    <tr><td class="key">ホイールをクリック</td><td>見ているブロックと同じものを手に持つ（<b>超便利！</b>）</td></tr>
+  </table>
+
+  <h3>アイテムの持ち方</h3>
+  <p>画面の下に、アイテムが9個ならぶ「<b>ホットバー</b>」があります。数字キーの<kbd>1</kbd>〜<kbd>9</kbd>で持つアイテムを選べます。</p>
+  <p><kbd>E</kbd>キーをおすと「<b>インベントリ（持ち物画面）</b>」が開きます。クリエイティブモードなら、ここで好きなブロックを検索して取り出せます。アイテムをクリックしてホットバーに置けば準備完了です。</p>
+
+  <h3>空を飛ぶ（クリエイティブモード）</h3>
+  <p>このプロジェクトでは、<b>クリエイティブモード</b>（ブロック使い放題・飛べるモード）で建築します。</p>
+  <ol class="steps">
+    <li><kbd>スペース</kbd>を<b>すばやく2回</b>おすと、飛行モードになる</li>
+    <li>飛んでいる間、<kbd>スペース</kbd>で上に、<kbd>Shift</kbd>で下に動ける</li>
+    <li>もう一度<kbd>スペース</kbd>を2回おすと、飛行モードが終わって落ちる（注意！）</li>
+  </ol>
+
+  <h3>その他の大事なキー</h3>
+  <table>
+    <tr><th>キー</th><th>動き</th></tr>
+    <tr><td class="key"><kbd>T</kbd></td><td>チャットを開く（コマンドもここに入力する）</td></tr>
+    <tr><td class="key"><kbd>Esc</kbd></td><td>メニューを開く／画面を閉じる。困ったらまずこれ！</td></tr>
+    <tr><td class="key"><kbd>F5</kbd></td><td>視点の切りかえ（自分の姿が見える視点になる）</td></tr>
+  </table>
+
+  <div class="try">
+    <b class="title">✅ やってみよう！</b>
+    ①<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>で歩き回る → ②<kbd>スペース</kbd>2回で飛ぶ → ③<kbd>E</kbd>でインベントリから好きなブロックを取り出す → ④ブロックを10個置いて、全部壊す。これができたら基本操作はバッチリ！
+  </div>
+</section>
+
+<!-- ================= 第3章 ================= -->
+<section class="chapter" id="ch3">
+  <span class="ch-num">第3章</span>
+  <h2>座標（ざひょう）の見方・使い方</h2>
+  <p>マイクラの世界には「<b>座標</b>」という住所のようなものがあります。コマンドを使うときに必ず必要になるので、しっかり覚えましょう。</p>
+
+  <h3>座標ってなに？</h3>
+  <p>座標は <b>X・Y・Z</b> の3つの数字のセットです。</p>
+  <table>
+    <tr><th>文字</th><th>意味</th><th>おぼえ方</th></tr>
+    <tr><td class="key">X</td><td>東西の位置</td><td>東に進むとふえる、西に進むとへる</td></tr>
+    <tr><td class="key">Y</td><td>高さ</td><td>上にのぼるとふえる。海面はだいたい <b>Y=63</b></td></tr>
+    <tr><td class="key">Z</td><td>南北の位置</td><td>南に進むとふえる、北に進むとへる</td></tr>
+  </table>
+  <p>たとえば「X=100, Y=64, Z=-50」と言えば、世界の中のたった1か所を正確に伝えられます。</p>
+
+  <h3>座標を画面に表示する方法</h3>
+  <ol class="steps">
+    <li><kbd>Esc</kbd>をおして「設定」を開く</li>
+    <li>「ゲーム」の設定の中にある「<b>座標を表示</b>」をONにする</li>
+    <li>画面の左上に「位置: 100, 64, -50」のように表示されればOK！</li>
+  </ol>
+
+  <div class="tip">
+    <b class="title">💡 自分がどっちを向いているか知る方法</b>
+    歩きながら座標を見てみましょう。Xの数字がふえるなら東向き、Zの数字がふえるなら南向きです。建築のときは「この通りは東西方向」のように方角を意識すると、本物そっくりに作れます。
+  </div>
+
+  <div class="try">
+    <b class="title">✅ やってみよう！</b>
+    座標を表示して、①今いる場所のX・Y・Zをメモする → ②少し歩いて数字がどう変わるか見る → ③ジャンプしてYが変わるのを確認する。
+  </div>
+</section>
+
+<!-- ================= 第4章 ================= -->
+<section class="chapter" id="ch4">
+  <span class="ch-num">第4章</span>
+  <h2>コマンドの基本</h2>
+  <p>「コマンド」は、マイクラの世界に出す<b>魔法の命令文</b>です。手で1個ずつブロックを置くと1時間かかる作業が、コマンドなら1秒で終わることもあります。</p>
+
+  <h3>コマンドの打ち方</h3>
+  <ol class="steps">
+    <li><kbd>T</kbd>キーでチャットを開く</li>
+    <li>最初に「<b>/</b>（スラッシュ）」を打つ。これが「コマンドですよ」の合図</li>
+    <li>続けてコマンドを入力して、<kbd>Enter</kbd>で実行！</li>
+  </ol>
+  <div class="cmd">/help <span class="c">← コマンドの一覧が見られる</span></div>
+
+  <div class="tip">
+    <b class="title">💡 入力中に「候補」が出てくる！</b>
+    コマンドを打ちはじめると、画面に続きの候補が表示されます。ブロックの名前をぜんぶ覚えなくても、<b>候補を見ながら選べば大丈夫</b>。スペルミスも防げるので、必ず候補を見ながら打ちましょう。
+  </div>
+
+  <h3>「~（チルダ）」= 今いる場所</h3>
+  <p>座標を入れる場所に「<b>~</b>」と書くと、「<b>今、自分がいる場所</b>」という意味になります。</p>
+  <div class="cmd">~ ~ ~       <span class="c">← 今いる場所そのもの</span>
+~ ~5 ~      <span class="c">← 今いる場所から5ブロック上</span>
+~10 ~ ~-3   <span class="c">← 東に10、北に3ずれた場所</span></div>
+  <p>「~5」は「今の場所+5」、「~-3」は「今の場所−3」です。いちいち座標をメモしなくてよくなるので、とても便利です。</p>
+
+  <h3>よく使う「@」の書き方（ターゲットセレクター）</h3>
+  <table>
+    <tr><th>書き方</th><th>意味</th></tr>
+    <tr><td class="key">@s</td><td>自分</td></tr>
+    <tr><td class="key">@p</td><td>一番近くにいるプレイヤー</td></tr>
+    <tr><td class="key">@a</td><td>全員</td></tr>
+    <tr><td class="key">@e</td><td>すべてのモブやアイテム</td></tr>
+  </table>
+
+  <div class="warn">
+    <b class="title">⚠️ コマンドが動かないときは</b>
+    ワールドの設定で「チートの実行」がONになっている必要があります。動かないときはリーダーに確認してもらいましょう。
+  </div>
+</section>
+
+<!-- ================= 第5章 ================= -->
+<section class="chapter" id="ch5">
+  <span class="ch-num">第5章</span>
+  <h2>fillコマンドをマスターしよう</h2>
+  <p><b>fill（フィル）コマンド</b>は、指定した範囲を一気にブロックでうめる、建築で一番使うコマンドです。壁も床も土台も、これ1つで一瞬で作れます。</p>
+
+  <h3>基本の形</h3>
+  <div class="cmd">/fill x1 y1 z1 x2 y2 z2 ブロック名</div>
+  <p>「<b>角(x1, y1, z1)</b>」と「<b>反対側の角(x2, y2, z2)</b>」の2つの座標を指定すると、その2点を対角線とする<b>直方体（箱の形）</b>の範囲が、ぜんぶそのブロックになります。</p>
+
+  <h3>例①：石の床を作る</h3>
+  <div class="cmd">/fill ~ ~-1 ~ ~10 ~-1 ~10 stone</div>
+  <p>自分の足元から、東に10・南に10の範囲に、石の床（11×11）ができます。</p>
+
+  <h3>例②：壁を作る</h3>
+  <div class="cmd">/fill ~ ~ ~ ~10 ~4 ~ bricks</div>
+  <p>横11ブロック・高さ5ブロックのレンガの壁が一瞬で完成！門司港はレンガの建物が多いので、大活躍します。</p>
+
+  <h3>例③：ブロックを消す（airでうめる）</h3>
+  <div class="cmd">/fill ~ ~ ~ ~10 ~10 ~10 air</div>
+  <p>「air（空気）」でうめる = <b>その範囲のブロックをぜんぶ消す</b>という意味です。まちがえて作ったものを消すときに使います。<b>消す範囲をまちがえると人の建築も消えるので、座標をよーく確認してから実行！</b></p>
+
+  <h3>便利なオプション（最後につけ足す言葉）</h3>
+  <table>
+    <tr><th>オプション</th><th>効果</th></tr>
+    <tr><td class="key">hollow</td><td>外側だけ作って、中を空洞にする（<b>建物の外壁作りに最強！</b>）</td></tr>
+    <tr><td class="key">outline</td><td>外側だけ作って、中はそのまま残す</td></tr>
+    <tr><td class="key">keep</td><td>空気の場所だけうめる（すでにあるブロックは残す）</td></tr>
+    <tr><td class="key">replace</td><td>指定したブロックだけを置きかえる</td></tr>
+  </table>
+
+  <h3>例④：建物の箱をhollowで一発生成</h3>
+  <div class="cmd">/fill ~ ~ ~ ~12 ~6 ~8 bricks hollow</div>
+  <p>13×7×9の<b>中が空洞のレンガの箱</b>ができます。あとは窓や入口をあけて、屋根をのせれば建物の形に！</p>
+
+  <h3>例⑤：replaceでブロックを置きかえる</h3>
+  <div class="cmd">/fill ~-20 ~-1 ~-20 ~20 ~-1 ~20 stone replace grass_block</div>
+  <p>「範囲の中の<b>草ブロックだけ</b>を石に置きかえる」という意味です。ほかのブロックはそのまま残ります。「壁の色をまちがえた！」というときの修正にも便利です。</p>
+
+  <div class="warn">
+    <b class="title">⚠️ fillの注意点</b>
+    ・一度にうめられるのは <b>32,768ブロックまで</b>。大きすぎると「多すぎます」と出るので、範囲を分けて実行しよう。<br>
+    ・fillに「元にもどす」ボタンはありません。<b>実行する前に、座標が合っているか必ず2回確認！</b>
+  </div>
+
+  <div class="try">
+    <b class="title">✅ やってみよう！（fill練習メニュー）</b>
+    ①石の床(11×11)を作る → ②その上にhollowでレンガの箱を作る → ③airで入口をあける → ④まちがえたつもりでairコマンドを使って全部消す。ここまでできたらfillマスター！
+  </div>
+</section>
+
+<!-- ================= 第6章 ================= -->
+<section class="chapter" id="ch6">
+  <span class="ch-num">第6章</span>
+  <h2>建築に役立つコマンド集</h2>
+
+  <h3>/tp 〜テレポート〜</h3>
+  <div class="cmd">/tp @s 100 64 -50   <span class="c">← 座標(100, 64, -50)に瞬間移動</span>
+/tp @s 名前          <span class="c">← その人のところへ瞬間移動</span></div>
+  <p>広い門司港の街を歩いて移動すると大変。テレポートでビュンと移動しましょう。集合するときにも便利です。</p>
+
+  <h3>/setblock 〜1個だけブロックを置く〜</h3>
+  <div class="cmd">/setblock ~ ~2 ~ glass</div>
+  <p>fillの1個バージョン。手がとどかない場所に1個だけ置きたいときに使います。</p>
+
+  <h3>/clone 〜建築のコピー＆ペースト〜</h3>
+  <div class="cmd">/clone x1 y1 z1 x2 y2 z2 x3 y3 z3</div>
+  <p>「角(x1,y1,z1)〜反対の角(x2,y2,z2)」の範囲を、「(x3,y3,z3)」の場所にコピーします。<b>同じ形の窓や柱、街灯をたくさん並べるときに超便利！</b>1個ていねいに作って、あとはcloneでコピーすれば、キレイにそろった建物になります。</p>
+  <div class="tip">
+    <b class="title">💡 cloneのコツ</b>
+    コピー先の座標(x3,y3,z3)は、コピーされる範囲の「<b>一番小さい角（北西の一番下）</b>」の位置になります。ずれたら一度airで消して、座標を調整してやり直しましょう。
+  </div>
+
+  <h3>/give 〜アイテムを出す〜</h3>
+  <div class="cmd">/give @s bricks 64</div>
+  <p>レンガブロックを64個ゲット。インベントリで探すより速いことも。</p>
+
+  <h3>/gamemode 〜モードの切りかえ〜</h3>
+  <div class="cmd">/gamemode creative   <span class="c">← クリエイティブモード（建築用）</span>
+/gamemode survival   <span class="c">← サバイバルモード（探検・確認用）</span></div>
+
+  <h3>/time ・ /weather 〜時間と天気〜</h3>
+  <div class="cmd">/time set day       <span class="c">← 朝にする</span>
+/time set night     <span class="c">← 夜にする（ライトアップの確認に！）</span>
+/weather clear      <span class="c">← 雨をやませる</span></div>
+  <p>夜の門司港はライトアップがきれいな街。夜にして明かりの見え方をチェックするのもおすすめです。</p>
+
+  <h3>/effect 〜暗視（あんし）で暗い場所も見える〜</h3>
+  <div class="cmd">/effect @s night_vision 99999 1 true</div>
+  <p>夜や建物の中でも昼のように明るく見えます。最後の「true」は、画面のモヤモヤ（エフェクトの泡）を消すおまじないです。</p>
+
+  <h3>/kill 〜落ちているアイテムのおそうじ〜</h3>
+  <div class="cmd">/kill @e[type=item]</div>
+  <p>壊したブロックが地面に散らばって重くなったとき、落ちているアイテム<b>だけ</b>を消してくれます。<code>[type=item]</code>を忘れると大変なことになるので注意！</p>
+</section>
+
+<!-- ================= 第7章 ================= -->
+<section class="chapter" id="ch7">
+  <span class="ch-num">第7章</span>
+  <h2>Google Earthで距離を測ろう</h2>
+  <p>本物そっくりの門司港を作るヒミツは、<b>「本物の大きさを測ってから作る」</b>こと。マイクラのブロック1個は<b>ちょうど1メートル</b>なので、実際の長さがわかれば、そのままブロックの数になります。</p>
+  <div class="tip">
+    <b class="title">💡 魔法の公式</b>
+    <b>実際の長さ（メートル）＝ 置くブロックの数</b><br>
+    例：建物の横はばが42mなら → 42ブロック！
+  </div>
+
+  <h3>Google Earthでの測り方</h3>
+  <ol class="steps">
+    <li>パソコンのブラウザで <b>earth.google.com</b> を開く</li>
+    <li>検索バーに「<b>門司港駅</b>」と入力して、門司港に飛ぶ</li>
+    <li>画面のツールから<b>定規（ものさし）アイコン</b>の「計測」をクリック</li>
+    <li>測りたいものの<b>はし</b>を1回クリック（例：建物の左はし）</li>
+    <li><b>反対のはし</b>をクリック（例：建物の右はし）</li>
+    <li>距離が表示される！単位が「m（メートル）」になっているか確認しよう</li>
+  </ol>
+
+  <h3>Googleマップでも測れる</h3>
+  <ol class="steps">
+    <li>Googleマップで門司港を表示する（航空写真モードにすると見やすい）</li>
+    <li>測りたい場所の始点を<b>右クリック</b></li>
+    <li>メニューから「<b>距離を測定</b>」を選ぶ</li>
+    <li>終点をクリックすると距離が出る</li>
+  </ol>
+
+  <h3>高さはどうやって決めるの？</h3>
+  <p>上から見た地図では建物の高さはわかりません。そこで、この目安を使いましょう。</p>
+  <table>
+    <tr><th>建物</th><th>高さの目安</th></tr>
+    <tr><td>1階分の高さ</td><td>約3〜4m（= 3〜4ブロック）</td></tr>
+    <tr><td>2階建ての家</td><td>約7〜8ブロック＋屋根</td></tr>
+    <tr><td>電柱・街灯</td><td>約8〜12ブロック / 4〜6ブロック</td></tr>
+  </table>
+  <p>写真を見て「何階建てかな？」と数えれば、高さのブロック数が計算できます。</p>
+
+  <div class="try">
+    <b class="title">✅ やってみよう！</b>
+    Google Earthで①門司港駅の駅舎の横はば、②はね橋（ブルーウィングもじ）の長さ、③自分が担当する建物の大きさ、を測ってメモしよう。メモした数字がそのまま設計図になるよ！
+  </div>
+</section>
+
+<!-- ================= 第8章 ================= -->
+<section class="chapter" id="ch8">
+  <span class="ch-num">第8章</span>
+  <h2>実物をマイクラで再現するコツ</h2>
+
+  <h3>コツ①：写真をたくさん集める</h3>
+  <p>作りはじめる前に、作る建物の写真を<b>いろいろな角度から</b>集めましょう。Googleマップの<b>ストリートビュー</b>を使うと、実際にその場所に立っているように建物を見られます。正面・横・ななめ・屋根の形をチェック！</p>
+
+  <h3>コツ②：いきなり作らず「枠」から作る</h3>
+  <ol class="steps">
+    <li>第7章で測った大きさで、地面に<b>四角い枠</b>を作る（土地の確保）</li>
+    <li>四隅に高さぶんの<b>柱</b>を立てる（建物の骨組み）</li>
+    <li>fillのhollowなどで<b>壁</b>を作る</li>
+    <li><b>窓と入口</b>をあける（写真を見て、窓の数と間隔を数える！）</li>
+    <li>最後に<b>屋根</b>と<b>かざり</b>をつける</li>
+  </ol>
+  <p>大きい形から先に作って、細かい部分はあとまわし。これがプロの順番です。</p>
+
+  <h3>コツ③：窓の数をかぞえる</h3>
+  <p>本物そっくりに見えるかどうかは、じつは<b>窓で決まります</b>。写真を見て「横に窓が6個、間は2ブロックずつ」のように数えてから作ると、ぐっと本物に近づきます。</p>
+
+  <h3>コツ④：ブロックの使い分け（門司港でよく使う素材）</h3>
+  <table>
+    <tr><th>本物の素材</th><th>おすすめブロック</th></tr>
+    <tr><td>レンガの壁（旧税関など）</td><td>レンガ、ネザーレンガ（こげ茶のレンガ）</td></tr>
+    <tr><td>白い壁（門司港駅など）</td><td>石英ブロック、白のコンクリート</td></tr>
+    <tr><td>屋根</td><td>階段ブロックとハーフブロックを組み合わせる</td></tr>
+    <tr><td>窓</td><td>ガラス板（色つきガラスで雰囲気も出せる）</td></tr>
+    <tr><td>道路・歩道</td><td>石、安山岩、灰色のコンクリート</td></tr>
+    <tr><td>海</td><td>水（海底を作ってからfillで水を張る）</td></tr>
+  </table>
+
+  <h3>コツ⑤：ななめ・カーブの表現</h3>
+  <p>マイクラは四角いブロックの世界なので、ななめの壁やカーブは「<b>階段状にずらして</b>」表現します。1ブロックずつずらすとカクカクに、2〜3ブロックごとにずらすとゆるやかなカーブになります。</p>
+
+  <div class="tip">
+    <b class="title">💡 うまく見えないときは</b>
+    少しはなれた場所から<kbd>F5</kbd>視点で全体を見てみましょう。近くで見ると変でも、遠くから見るとちゃんと見えることがよくあります。逆に、遠くから見て変なところが直すべきポイントです。
+  </div>
+</section>
+
+<!-- ================= 第9章 ================= -->
+<section class="chapter" id="ch9">
+  <span class="ch-num">第9章</span>
+  <h2>みんなで作る時のルール・マナー</h2>
+  <p>このワールドは、みんなで力を合わせて作る<b>ひとつの作品</b>です。全員が気持ちよく作業できるように、次のルールを守りましょう。</p>
+
+  <h3>ぜったいに守る5つのルール</h3>
+  <ol class="steps">
+    <li><b>人の建築を壊さない・勝手に変えない。</b>直したいところを見つけたら、まず作った人に声をかけよう</li>
+    <li><b>fillやcloneを使う前に、座標を2回確認する。</b>範囲をまちがえると人の作品まで消えてしまいます</li>
+    <li><b>TNT・溶岩・火打ち石は使わない。</b>一瞬で街が燃えたり消えたりします</li>
+    <li><b>自分の担当場所で作業する。</b>新しい場所に建てたいときはリーダーに相談</li>
+    <li><b>チャットはやさしい言葉で。</b>画面の向こうにいるのは友だちです</li>
+  </ol>
+
+  <h3>失敗しちゃったときは</h3>
+  <p><b>失敗はぜんぜんOK！</b>だれでも最初はまちがえます。大事なのは、壊してしまったり消してしまったりしたときに、<b>かくさずにすぐリーダーや大人に伝える</b>こと。早く言ってくれれば、バックアップから直せることも多いです。</p>
+
+  <div class="warn">
+    <b class="title">⚠️ 作業前のチェック</b>
+    ①自分の担当場所にいるか？ ②これから実行するコマンドの座標は合っているか？ ③まわりに他の人の建築はないか？ この3つを確認してから作業スタート！
+  </div>
+
+  <div class="try">
+    <b class="title">✅ 最後に</b>
+    このガイドをぜんぶマスターしたら、きみも立派な「バーチャル門司港の建築士」！ 本物の門司港に負けない、すてきな街をいっしょに作りましょう🚉⚓
+  </div>
+</section>
+
+</main>
+
+<footer>
+  バーチャル門司港プロジェクト 制作ガイド ／ マインクラフト統合版（Bedrock Edition）対応
+</footer>
+
+</body>
+</html>
